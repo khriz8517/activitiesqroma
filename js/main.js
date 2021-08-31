@@ -32,35 +32,20 @@ var app = new Vue({
     delimiters: ["{(", ")}"],
     data: {
         showModal: false,
-        material: [
-            {
-                id: 1,
-                material_title: "Nombre del primer archivo adjunto",
-                updated: "Actualizado el 16 de junio de 2021",
-                material_icon: "attachment",
-                link_file: "",
-                format: ".pdf",
-            },
-            {
-                id: 2,
-                material_title: "Nombre del video",
-                updated: "Actualizado el 16 de junio de 2021",
-                material_icon: "slow_motion_video",
-                link_file: "",
-                format: ".mp4",
-            },
-            {
-                id: 3,
-                material_title: "Nombre del segundo archivo",
-                updated: "Actualizado el 16 de junio de 2021",
-                material_icon: "attachment",
-                link_file: "",
-                format: ".pdf",
-            },
-        ],
+        material: [],
         material_item: {},
     },
+    created() {
+        this.getMateriales();
+    },
     methods: {
+        getMateriales: function () {
+            let frm = new FormData();
+            frm.append("request_type", "getMateriales");
+            axios.post("api/ajax_controller.php", frm).then((res) => {
+                this.material = res.data;
+            });
+        },
         toggleModal: function () {
             this.showModal = !this.showModal;
         },

@@ -14,7 +14,7 @@ $PAGE->set_heading('Activities Qroma Plugin');
 
 
 $templateContext = (object)[
-    'sesskey' => sesskey()
+    'sesskey' => sesskey() 
 ];
 
 echo $OUTPUT->header();

@@ -1,4 +1,5 @@
 Vue.component("stars", {
+    props: ["id"],
     data() {
         return {
             star_index: 0,
@@ -7,7 +8,14 @@ Vue.component("stars", {
     },
     methods: {
         calificarPregunta: function (numstars) {
-            console.log(numstars);
+            let frm = new FormData();
+            frm.append("request_type", "encuestaRespByUser");
+            frm.append("id", this.id);
+            frm.append("puntaje", numstars);
+            frm.append("sesskey", sesskey);
+            axios.post("api/ajax_controller.php", frm).then((res) => {
+                console.log(res);
+            });
         },
     },
     template: `
@@ -26,10 +34,18 @@ var app = new Vue({
     el: "#app",
     delimiters: ["{(", ")}"],
     data: {
-        preguntas: [
-            { id: 1, pregunta: "¿Qué tanto te gustó el curso?" },
-            { id: 2, pregunta: "¿Cómo calificas el contenido?" },
-            { id: 3, pregunta: "¿Cómo calificas la presentación?" },
-        ],
+        preguntas: [],
+    },
+    created() {
+        this.getPreguntasEncuesta();
+    },
+    methods: {
+        getPreguntasEncuesta: function () {
+            let frm = new FormData();
+            frm.append("request_type", "getPreguntasEncuesta");
+            axios.post("api/ajax_controller.php", frm).then((res) => {
+                this.preguntas = res.data;
+            });
+        },
     },
 });

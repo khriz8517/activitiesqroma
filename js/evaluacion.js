@@ -23,39 +23,14 @@ var app = new Vue({
     },
     methods: {
         getPreguntas: function () {
-            var array_preguntas = [
-                {
-                    id: 1,
-                    pregunta: "¿Qué mar navegan los astronautas?",
-                    opciones: [
-                        {
-                            id: 1,
-                            opcion: "Rios, lagos y lagunitas",
-                            is_valid: false,
-                        },
-                        { id: 2, opcion: "Océano atlantico", is_valid: false },
-                        { id: 3, opcion: "Océano pacífico", is_valid: false },
-                        {
-                            id: 4,
-                            opcion: "Ninguna de las anteriores",
-                            is_valid: true,
-                        },
-                    ],
-                },
-                {
-                    id: 2,
-                    pregunta:
-                        "El agua potable tiene color amarillo verdoso clandestino.",
-                    opciones: [
-                        { id: 5, opcion: "Verdadero", is_valid: false },
-                        { id: 6, opcion: "Falso", is_valid: true },
-                    ],
-                },
-            ];
-            this.preguntas = array_preguntas;
+            let frm = new FormData();
+            frm.append("request_type", "getPreguntasOpcionesEvaluacion");
+            axios.post("api/ajax_controller.php", frm).then((res) => {
+                this.preguntas = res.data;
+            });
         },
         opcionMarcada: function (pregunta, opcion) {
-            if (opcion.is_valid) {
+            if (opcion.is_valid === "1") {
                 this.resp_correctas += 1;
             }
             console.log(
