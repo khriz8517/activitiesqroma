@@ -19,8 +19,8 @@ Vue.component("modal", {
                         <source :src="material_item.link_file" type="video/mp4">
                         Tu navegador no soporta video en HTML.
                     </video>
-                    <object v-if="material_item.format === '.pdf'" data="http://www.africau.edu/images/default/sample.pdf" type="application/pdf" width="100%" height="100%">
-                        <p>En caso no se visualice el PDF has click <a href="http://www.africau.edu/images/default/sample.pdf">aqui!</a></p>
+                    <object v-if="material_item.format === '.pdf'" :data="material_item.link_file" type="application/pdf" width="100%" height="100%">
+                        <p>En caso no se visualice el PDF has click <a :href="material_item.link_file">aqui!</a></p>
                     </object>
                 </div>
             </div>

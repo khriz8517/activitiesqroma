@@ -29,6 +29,11 @@ try {
 		case 'getPreguntasOpcionesEvaluacion':
 			$returnArr = getPreguntasOpcionesEvaluacion();
 			break;
+		case 'insertResultadoEvaluacion':
+			$puntaje = $_REQUEST['puntaje'];
+			$sesskey = $_REQUEST['sesskey'];
+			$returnArr = insertResultadoEvaluacion($puntaje, $sesskey);
+			break;
 		case 'getMateriales':
 			$returnArr = getMateriales();
 			break;
@@ -47,9 +52,20 @@ exit();
 /** 
  * getPreguntasEncuesta
  * * obtengo las pregunta de la encuesta 
+ * ? se deveria excluir las preguntas que ya fueron respondidas?
  */
 function getPreguntasEncuesta() {
-	global $DB;
+	global $DB, $USER;
+	$not_in = [];
+	$if_exists = $DB->get_records('aq_encuesta_user_data', [
+		'userid' => $USER->id
+	]);
+	if(count($if_exists)){
+		foreach ($if_exists as $key => $value) {
+			array_push($not_in, $value->preguntaid);
+		}
+	}
+	// TODO: si se decide excluir las preguntas entonces hacer un RAW SQL QUERY 
 	return $DB->get_records('aq_encuesta_data', [
 		'active' => 1
 	]);
@@ -65,11 +81,32 @@ function getPreguntasEncuesta() {
 function encuestaRespByUser($id, $puntaje, $sesskey){
 	global $DB, $USER;
 	require_sesskey();
-	$data = array(
-		'id' => $id,
-		'puntaje' => $puntaje
-	);
-	return $data;
+
+	$if_exists = $DB->get_records('aq_encuesta_user_data', [
+		'userid' => $USER->id,
+		'preg_encuestaid' => $id,
+	]);
+
+	if(count($if_exists)){
+		foreach ($if_exists as $key => $value) {
+			$data = array(
+				'id' => $value->id,
+				'puntaje' => $puntaje,
+				'updated_at' => time()
+			);
+			$DB->update_record('aq_encuesta_user_data', $data);
+		}
+		return 'updated';
+	}else{
+		$data = array(
+			'userid' => $USER->id,
+			'preg_encuestaid' => $id,
+			'puntaje' => $puntaje,
+			'created_at' => time()
+		);
+		$insert_id = $DB->insert_record('aq_encuesta_user_data', $data);
+		return 'inserted';
+	}
 }
 
 /**
@@ -77,8 +114,14 @@ function encuestaRespByUser($id, $puntaje, $sesskey){
  * * obtiene las preguntas de la evaluacion y sus opciones
  */
 function getPreguntasOpcionesEvaluacion(){
-	global $DB;
+	global $DB, $USER;
+
+	$result = $DB->get_field('aq_eval_user_puntaje_data', 'puntaje_porcentaje', [
+		'userid' => $USER->id
+	]);
+
 	$data = [];
+
 	$preguntas = $DB->get_records('aq_evaluacion_data', [
 		'active' => 1
 	]);
@@ -94,7 +137,12 @@ function getPreguntasOpcionesEvaluacion(){
 		));
 	}
 
-	return $data;
+	$output = [
+		'preguntas' => $data,
+		'result' => $result == false ? 0 : intval($result) 
+	];
+
+	return $output;
 }
 
 /**
@@ -107,11 +155,35 @@ function getPreguntasOpcionesEvaluacion(){
 function insertResultadoEvaluacion($puntaje, $sesskey){
 	global $DB, $USER;
 	require_sesskey();
+
+	$if_exists = $DB->get_records('aq_eval_user_puntaje_data', [
+		'userid' => $USER->id
+	]);
+
+	if(count($if_exists)){
+		foreach ($if_exists as $key => $value) {
+			$data = array(
+				'id' => $value->id,
+				'puntaje_porcentaje' => $value->puntaje_porcentaje > 80 ? $value->puntaje_porcentaje : $puntaje,
+				'created_at' => time()
+			);
+			$DB->update_record('aq_eval_user_puntaje_data', $data);
+		}
+		return 'updated';
+	}else{
+		$data = array(
+			'userid' => $USER->id,
+			'puntaje_porcentaje' => $puntaje,
+			'created_at' => time()
+		);
+		$insert_id = $DB->insert_record('aq_eval_user_puntaje_data', $data);
+		return 'inserted';
+	}
 }
 
 /**
  * getMateriales
- * * 
+ * * obtiene los registros para la actividad revision material
  */
 function getMateriales(){
 	global $DB;

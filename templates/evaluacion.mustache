@@ -12,7 +12,7 @@
 />
 
 <div id="app">
-    <div class="evaluacion-section">
+    <div v-if="ready === true" class="evaluacion-section">
         <div class="evs-title">
             <h1>ejemplo sap</h1>
         </div>
@@ -94,6 +94,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    const sesskey = "{{sesskey}}";
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
