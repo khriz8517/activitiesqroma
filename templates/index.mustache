@@ -49,6 +49,7 @@
                                     <label class="container">
                                         <input
                                             type="checkbox"
+                                            :checked="item.marked == true ? 'checked' : ''"
                                             @click="dynamicOptionCheckbox(item.id)"
                                         />
                                         <span class="checkmark"></span>

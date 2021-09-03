@@ -50,9 +50,11 @@ var app = new Vue({
             this.showModal = !this.showModal;
         },
         dynamicOptionCheckbox: function (id) {
-            console.log(
-                "aqui se ejecuta el metodo cuando se hace click en el checkbox de las opciones dinamicas"
-            );
+            let frm = new FormData();
+            frm.append("request_type", "materialesMarcadosByUser");
+            frm.append("materialid", id);
+            frm.append("sesskey", sesskey);
+            axios.post("api/ajax_controller.php", frm).then((res) => {});
         },
         staticOptionCheckbox: function () {
             console.log(

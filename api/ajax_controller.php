@@ -37,6 +37,11 @@ try {
 		case 'getMateriales':
 			$returnArr = getMateriales();
 			break;
+		case 'materialesMarcadosByUser':
+			$materialid = $_REQUEST['materialid'];
+			$sesskey = $_REQUEST['sesskey'];
+			$returnArr = materialesMarcadosByUser($materialid, $sesskey);
+			break;
 	}
 
 } catch (Exception $e) {
@@ -52,7 +57,8 @@ exit();
 /** 
  * getPreguntasEncuesta
  * * obtengo las pregunta de la encuesta 
- * ? se deveria excluir las preguntas que ya fueron respondidas?
+ * ? se deberia excluir las preguntas que ya fueron respondidas?
+ * ? se deberia mostrar la puntuacion de la pregunta si ya fue marcada?
  */
 function getPreguntasEncuesta() {
 	global $DB, $USER;
@@ -186,8 +192,58 @@ function insertResultadoEvaluacion($puntaje, $sesskey){
  * * obtiene los registros para la actividad revision material
  */
 function getMateriales(){
-	global $DB;
-	return $DB->get_records('aq_material_data', [
+	global $DB, $USER;
+
+	$data = [];
+	$materiales = $DB->get_records('aq_material_data', [
 		'active' => 1
 	]);
+
+	foreach ($materiales as $key => $value) {
+		$if_marked = $DB->get_records('aq_material_revisado_data', [
+			'userid' => $USER->id,
+			'materialid' => $value->id
+		]);
+		array_push($data, [
+			'id' => $value->id,
+			'material_title' => $value->material_title,
+			'material_icon' => $value->material_icon,
+			'link_file' => $value->link_file,
+			'format' => $value->format,
+			'marked' => count($if_marked) ? true : false
+
+		]);
+	}
+	return $data;
+}
+
+function materialesMarcadosByUser($materialid, $sesskey){
+	global $DB, $USER;
+	require_sesskey();
+
+	$if_marked = $DB->get_records('aq_material_revisado_data', [
+		'userid' => $USER->id,
+		'materialid' => $materialid
+	]);
+
+	if(count($if_marked)){
+		foreach ($if_marked as $key => $value) {
+			$data = array(
+				'id' => $value->id,
+				'userid' => $USER->id,
+				'materialid' => $materialid,
+				// 'updated_at' => time()
+			);
+			$DB->delete_records('aq_material_revisado_data', $data);
+		}
+		return 'updated';
+	}else{
+		$data = array(
+			'userid' => $USER->id,
+			'materialid' => $materialid,
+			'created_at' => time()
+		);
+		$insert_id = $DB->insert_record('aq_material_revisado_data', $data);
+		return 'inserted';
+	}
 }

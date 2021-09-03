@@ -1,0 +1,39 @@
+<link rel="stylesheet" href="./css/juego.css" />
+<link
+    href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+    rel="stylesheet"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+    href="https://fonts.googleapis.com/css2?family=Nunito&display=swap"
+    rel="stylesheet"
+/>
+
+<div id="app">
+    <div class="juego-section">
+        <div class="js-title">
+            <h1>ejemplo sap</h1>
+        </div>
+        <div class="js-breadcrumb">
+            <a href="#">Pagina Principal</a> / <a href="#">Cursos</a> /
+            <a href="#">Ejemplo SAP</a> / <a href="#">General</a> /
+            <a href="#">5. Juego</a>
+        </div>
+        <div class="js-body">
+            <iframe
+                class="iframe-juego"
+                src="{{ iframe_link }}"
+                frameborder="0"
+            ></iframe>
+        </div>
+    </div>
+</div>
+
+<script>
+    const sesskey = "{{sesskey}}";
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- <script src="./js/juego.js"></script> -->
