@@ -217,6 +217,13 @@ function getMateriales(){
 	return $data;
 }
 
+/**
+ * materialesMarcadosByUser
+ * * son los materiales marcasdos por un usuario
+ * @param materialid es el id del material
+ * @param sesskey es la sesion del usuario
+ */
+
 function materialesMarcadosByUser($materialid, $sesskey){
 	global $DB, $USER;
 	require_sesskey();
@@ -246,4 +253,149 @@ function materialesMarcadosByUser($materialid, $sesskey){
 		$insert_id = $DB->insert_record('aq_material_revisado_data', $data);
 		return 'inserted';
 	}
+}
+
+// TODO: implementar funciones crud de las tablas generadas
+
+/**
+ * insertMaterial
+ * * funcion para agregar materiales
+ * ! los iconos son basados en GOOGLE ICONS
+ * @param material_title el titulo del material
+ * @param link_file el link del material
+ * @param material_icon el icono del material a mostrar
+ * @param format el formato del @link_file ej. [.pdf, .mp4, .jpg, .???]
+ * @param active 1 = el material se mostrara, 0 = el material NO se mostrara
+ * @param sesskey es la sesion del usuario
+ */
+function insertMaterial($material_title, $link_file, $material_icon, $format, $active, $sesskey){
+	global $DB;
+	require_sesskey();
+
+	$data = array(
+		'material_title' => $material_title,
+		'link_file' => $link_file,
+		'material_icon' => $material_icon,
+		'format' => $format,
+		'active' => $active,
+		'created_at' => time()
+	);
+	$insert_id = $DB->insert_record('aq_material_data', $data);
+	return 'inserted';
+}
+
+/**
+ * actualizarMaterial
+ * * funcion para actualizar materiales
+ * ! los iconos son basados en GOOGLE ICONS
+ * @param materialid el identificador del material a actualizar
+ * @param material_title el titulo del material
+ * @param link_file el link del material
+ * @param material_icon el icono del material a mostrar
+ * @param format el formato del @link_file ej. [.pdf, .mp4, .jpg, .???]
+ * @param active 1 = el material se mostrara, 0 = el material NO se mostrara
+ * @param sesskey es la sesion del usuario
+ */
+function actualizarMaterial($materialid, $material_title, $link_file, $material_icon, $format, $active, $sesskey){
+	global $DB;
+	require_sesskey();
+
+	$data = array(
+		'id' => $materialid,
+		'material_title' => $material_title,
+		'link_file' => $link_file,
+		'material_icon' => $material_icon,
+		'format' => $format,
+		'active' => $active,
+		'updated_at' => time()
+	);
+	$DB->update_record('aq_material_data', $data);
+	return 'updated';
+}
+
+/**
+ * eliminarMaterial
+ * * funcion para eliminar materiales
+ * @param materialid el identificador del material a eliminar
+ * @param sesskey es la sesion del usuario
+ */
+function eliminarMaterial($materialid, $sesskey){
+	global $DB;
+	require_sesskey();
+
+	$data = array(
+		'id' => $materialid
+	);
+	$DB->delete_records('aq_material_data', $data);
+	return 'deleted';
+}
+
+/**
+ * insertarPreguntaEvaluacion
+ * * funcion para insertar preguntas para la evaluacion
+ * @param pregunta una pregunta de la evaluacion
+ * @param active si la pregunta esta activa, 1 = la pregunta se mostrara, 0 = la pregunta NO se mostrara
+ * @param sesskey es la sesion del usuario
+ */
+function insertarPreguntaEvaluacion($pregunta, $active, $sesskey){
+	global $DB;
+	require_sesskey();
+
+	$data = array(
+		'pregunta' => $pregunta,
+		'active' => $active,
+		'created_at' => time()
+	);
+	$insert_id = $DB->insert_record('aq_evaluacion_data', $data);
+	return 'inserted';
+}
+
+/**
+ * actualizarPreguntaEvaluacion
+ * * funcion para actualizar una pregunta de la evaluacion
+ * @param preguntaid es el id de la pregunta a actualizar
+ * @param pregunta es el texto de la pregunta
+ * @param active si la pregunta esta activa, 1 = la pregunta se mostrara, 0 = la pregunta NO se mostrara
+ * @param sesskey es la sesion del usuario
+ */
+function actualizarPreguntaEvaluacion($preguntaid, $pregunta, $active, $sesskey){
+	global $DB;
+	require_sesskey();
+
+	$data = array(
+		'id' => $preguntaid,
+		'pregunta' => $pregunta,
+		'active' => $active,
+		'updated_at' => time()
+	);
+	$DB->update_record('aq_evaluacion_data', $data);
+	return 'updated';
+}
+
+/**
+ * eliminarPreguntaEvaluacion
+ * * funcion que elimina una pregunta de la evaluacion
+ * ? se deberia eliminar las opciones de la pregunta tambien?
+ * ? o se deberia impedir la eliminacion de la pregunta si esta tiene opciones asignadas?
+ * @param preguntaid es el id de la pregunta a eliminar
+ * @param sesskey es la sesion del usuario
+ * TODO: implemetar la eliminacion de las opciones / impedir la eliminacion si la pregunta tiene opciones
+ */
+function eliminarPreguntaEvaluacion($preguntaid, $sesskey){
+	global $DB;
+	require_sesskey();
+
+	$data = array(
+		'id' => $preguntaid
+	);
+	// $DB->delete_records('aq_evaluacion_data', $data);
+	return 'deleted';
+}
+
+/**
+ * insertarOpcionesPregunta
+ * * funcion que inserta las opciones de una pregunta
+ */
+function insertarOpcionesPregunta(){
+
 }
