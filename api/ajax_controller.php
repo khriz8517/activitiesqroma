@@ -346,7 +346,7 @@ function insertarPreguntaEvaluacion($pregunta, $active, $sesskey){
 		'active' => $active,
 		'created_at' => time()
 	);
-	$insert_id = $DB->insert_record('aq_evaluacion_data', $data);
+	$DB->insert_record('aq_evaluacion_data', $data);
 	return 'inserted';
 }
 
@@ -396,6 +396,17 @@ function eliminarPreguntaEvaluacion($preguntaid, $sesskey){
  * insertarOpcionesPregunta
  * * funcion que inserta las opciones de una pregunta
  */
-function insertarOpcionesPregunta(){
+function insertarOpcionesPregunta($opcion, $preguntaid, $active, $is_valid, $sesskey){
+	global $DB;
+	require_sesskey();
 
+	$data = array(
+		'opcion' => $opcion,
+		'is_valid' => $is_valid,
+		'active' => $active,
+		'preguntaid' => $preguntaid,
+		'created_at' => time()
+	);
+	$DB->insert_record('aq_evaluacion_data', $data);
+	return 'inserted';
 }
