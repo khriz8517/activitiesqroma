@@ -6,11 +6,11 @@ global $DB;
 require_login();
 
 $context = context_system::instance();
-$PAGE->set_url(new moodle_url('/local/activitiesqroma/encuesta.php'));
+$PAGE->set_url(new moodle_url('/mod/activitiesqroma/encuesta.php'));
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_title('Activities Qroma Plugin');
 $PAGE->set_heading('Activities Qroma Plugin');
-// $PAGE->requires->js_call_amd('local_activitiesqroma/confirm');
+// $PAGE->requires->js_call_amd('mod_activitiesqroma/confirm');
 
 
 $templateContext = (object)[
@@ -18,5 +18,5 @@ $templateContext = (object)[
 ];
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('local_activitiesqroma/encuesta', $templateContext);
+echo $OUTPUT->render_from_template('mod_activitiesqroma/encuesta', $templateContext);
 echo $OUTPUT->footer();
